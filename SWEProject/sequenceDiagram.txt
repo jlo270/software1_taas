@@ -1,0 +1,58 @@
+@startuml
+actor User
+participant demandFE
+participant demandBE
+database demandDB
+participant MapService
+participant supplyBE
+database supplyDB
+
+autonumber
+group Login
+User->demandFE: login/register
+demandFE->demandBE: verification
+demandDB->demandBE: read from database
+demandBE->demandFE: success/fail response
+demandFE->User: show account/login status
+end
+
+autonumber
+group Request Vehicle
+User->demandFE: request vehicle 
+demandFE->demandBE: order verification
+demandBE->demandDB: log order
+demandDB->demandBE: confirmation response
+demandBE->supplyBE: send info of request
+supplyBE->supplyDB: confirmation of vehicle request
+supplyDB->supplyBE: vehicle is confirmed
+supplyBE->supplyDB: info about vehicle
+supplyDB->supplyBE: info 
+supplyBE->MapService: request Route
+MapService->supplyBE:receive Route
+demandBE->demandFE: display Route
+supplyBE->supplyDB: update dispatch record
+supplyDB->supplyBE: confirmation
+supplyBE->Vehicle: checking status
+Vehicle->supplyBE: route/confirmation
+supplyBE->demandBE: receive confirmation/response
+demandBE->demandFE: return success/fail response w/ info
+demandFE->User: display order status
+end
+
+autonumber
+group Access Account
+User->demandFE: Access account
+demandFE->demandBE: Get account info
+demandBE->demandDB: request account info
+demandDB->demandBE: return info
+demandBE->demandFE: provide info
+demandFE->User: display info
+User->demandFE: edit and save info
+demandFE->demandBE:send new info(update)
+demandBE->demandDB: update account
+demandDB->demandBE: confirmation/response
+demandBE->demandFE: handle response
+demandFE->User: display confirmation/response
+end
+
+@enduml

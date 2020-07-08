@@ -1,0 +1,92 @@
+@startuml
+
+Actor FleetManager
+Participant Fleet
+Participant vSim
+Participant Vehicle
+Participant User
+
+
+==Fleet Manager Actions==
+
+group View Info
+FleetManager->Fleet: find fleet [managerID]
+Fleet->Fleet: retrieve fleet info
+Fleet->FleetManager: show vehicles in fleet
+end
+
+group Update Vehicle
+FleetManager->Vehicle: Edit vehicle object [make,model,...]
+Vehicle->Vehicle: +update w/ edits
+group If: edit fleetID
+Vehicle->Fleet: changes to fleetID
+Fleet->Fleet: update changes[VIN]
+end
+Vehicle->FleetManager: confirm vehicle updates
+end
+
+group View Vehicles
+FleetManager->Vehicle: Find Vehicles [any vehicle attribute]
+Vehicle->Vehicle: +retrieve info
+Vehicle->FleetManager: show vehicle information
+end
+
+group Delete Vehicle
+FleetManager->Vehicle: delete vehicle
+Vehicle->Vehicle: vehicle
+Vehicle->Fleet: remove vehicle from fleet [fleetID, vehicle]
+Fleet->FleetManager: confirmation
+end
+
+group Add New Vehicle
+FleetManager->Vehicle: create vehicle [VIN, status, location, fleetID]
+Vehicle->Vehicle: register vehicle w/ VIN
+Vehicle->Fleet: register new vehicle in fleet [fleetID, vehicle]
+end
+
+group Register New Fleet
+FleetManager->Fleet: register new fleet [location, managers, fleetName]
+Fleet->Fleet: +unique fleet
+Fleet->FleetManager: success/response
+end
+
+group Edit Fleet Tools
+group Delete Fleet
+FleetManager->Fleet: deleteFleet [fleetID]
+group if remove vehicles
+Fleet->Vehicle: unassign associated vehicles 
+Vehicle->Vehicle: -[fleetID]
+Vehicle->Fleet: confirmation
+end
+group if remove users
+Fleet->User: unassign associated User
+User->User: -[fleetID]
+User->Fleet: confirmation
+end
+Fleet->Fleet: -fleet[fleetID]
+Fleet->FleetManager: fleet removal confirmation
+end 
+
+group Add Vehicle to Fleet
+FleetManager->vSim: create vehicle VIN [color, make, model, loc]
+vSim->vSim: register w/ VIN
+vSim->Vehicle: register vehicle
+Vehicle->Vehicle: + writes new vehicle
+Vehicle->FleetManager: confirmation response
+end
+
+group Update Fleet
+FleetManager->Fleet: edit fleet object [fleetID]
+Fleet->Fleet: +update fleet
+group If edit vehicle
+Fleet->Fleet: +-update vehicle fleet
+end
+group If edit manager
+Fleet->Fleet: +-user, fleet
+end
+Fleet->FleetManager: confirm fleet object
+end
+end
+
+
+@enduml

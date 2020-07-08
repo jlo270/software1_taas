@@ -1,0 +1,24 @@
+@startuml
+Participant Order
+Participant Dispatch
+Participant Fleet
+Participant Vehicle
+
+==Request Dispatch==
+group heartbeat
+Vehicle->Dispatch: updating status
+Dispatch->Vehicle: confirming/route
+end
+
+Order->Order: +order
+
+Order->Dispatch: request Vehicle
+Dispatch->Dispatch: +dispatch 
+Dispatch->Fleet: request closest vehicle
+Fleet->Fleet: +updates vehicle status
+Fleet->Dispatch:vehicle dispatch 
+Dispatch->Dispatch: +update dispatch 
+Dispatch->Order: vehicle on way
+
+
+@enduml
